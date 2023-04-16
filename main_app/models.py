@@ -20,21 +20,10 @@ class Device(models.Model):
     checked_out_by = models.ForeignKey(Employee, null=True, blank=True, on_delete=models.SET_NULL, related_name='checked_out_devices')
     checked_out_date = models.DateTimeField(null=True, blank=True)
     returned_date = models.DateTimeField(null=True, blank=True)
-    condition = models.TextField(null=True, blank=True)
+    latest_condition = models.TextField(null=True, blank=True)
+    is_available = models.BooleanField(default=True)
     # Add any other fields relevant to a device, such as serial number, model, etc.
 
-    # def check_out(self, employee, condition):
-    #     self.checked_out_by = employee
-    #     self.checked_out_date = timezone.now()
-    #     self.condition = condition
-    #     self.save()
-
-    # def check_in(self, condition):
-    #     self.checked_out_by = None
-    #     self.checked_out_date = None
-    #     self.returned_date = timezone.now()
-    #     self.condition = condition
-    #     self.save()
 
 class DeviceLog(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE, related_name='logs')
