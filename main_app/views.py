@@ -1,7 +1,5 @@
 from django.shortcuts import render
-from rest_framework.viewsets import ModelViewSet, GenericViewSet
-
-from rest_framework import generics, mixins, views
+from rest_framework.viewsets import ModelViewSet
 from .models import *
 from .serializers import *
 # Create your views here.
@@ -10,6 +8,8 @@ class CompanyViewset(ModelViewSet):
     serializer_class = CompanySerializer
     http_method_names = ['get','post']
 
+    # this queryset if anyone hit the endpoint without his company name
+    # he will get empty list, and with company name he will get his company details.
     def get_queryset(self):
         try:
             queryset = Company.objects.filter(name = self.request.data['name'])
@@ -26,15 +26,7 @@ class EmployeeViewset(ModelViewSet):
         company = Company.objects.get(name = company_name)
         return Employee.objects.filter(company = company)
 
-"""mixins.CreateModelMixin,
-                   mixins.RetrieveModelMixin,
-                   mixins.UpdateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.ListModelMixin,
-                   GenericViewSet"""
 class DeviceViewset(ModelViewSet):
-    # queryset = Device.objects.all(company = company)
-    # serializer_class = DeviceSerializer
     http_method_names = ['get', 'post', 'patch', 'delete']
 
     def get_serializer_class(self):
@@ -51,7 +43,8 @@ class DeviceViewset(ModelViewSet):
         return queryset
     
     def get_serializer_context(self):
-         
+         # here we are taking the action parameter from request body
+         # [action] denotes whether any device is checkouting or returning
          context_data = {}
          if self.request.method == "PATCH":
             try:
@@ -61,10 +54,19 @@ class DeviceViewset(ModelViewSet):
                 print(e)
          return context_data
     
-    # def update(self, request, *args, **kwargs):
-    #     try:
-    #         print(self.request.data['action'])
-    #     return super().update(request, *args, **kwargs)
-    
 
+class DeviceLogViewset(ModelViewSet):
+    serializer_class = DeviceLogSerializer
+    http_method_names = ['get']
 
+    # this queryset if anyone hit the endpoint without his company name
+    # he will get empty list, and with company name he will get his company details.
+    def get_queryset(self):
+        print(self.request.data)
+        queryset =  DeviceLog.objects.all()
+        if self.request.method == "GET":
+            company_name = self.request.data['company']
+            company = Company.objects.get(name = company_name)
+            device = Device.objects.filter(company = company)
+            queryset = queryset.filter(device__in= device)
+        return queryset
