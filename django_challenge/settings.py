@@ -37,8 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_yasg',
     'main_app',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_swagger'
+    
 ]
 
 MIDDLEWARE = [
@@ -71,6 +74,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_challenge.wsgi.application'
 
+REST_FRAMEWORK = { 
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' 
+    }
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
