@@ -70,3 +70,11 @@ class DeviceLogViewset(ModelViewSet):
             device = Device.objects.filter(company = company)
             queryset = queryset.filter(device__in= device)
         return queryset
+
+def payment_gateway(request):
+    # first we will need to create a API key or Secret key of the third party payment integration company
+    # then using that API key or API credentials we will develop integration code in this method which will take
+    # User payment related informations like credit-card info,CVV, phon number , address etc.
+    # Then after calling this function payment details of user will securely transmitted to the payment gateway or processor using this integration code.
+    # the payment-gateway will verify the details with CVV and the bank infos and pay to the targeted account and give a success or error response.
+    print("Placeholder of payment gateway integration")
